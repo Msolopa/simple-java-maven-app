@@ -45,7 +45,13 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
+        stage('deploy') {
+             input {
+                message 'Select the environment to deploy to:'
+                parameters {
+                    choice(name: 'ENV', choices: ['dev', 'staging', 'prod'], description: 'Deployment environment')
+                }
+            }
             steps {
                 bat 'docker build -t %IMAGE_NAME%:%IMAGE_TAG% .'
                 bat 'docker tag %IMAGE_NAME%:%IMAGE_TAG% %IMAGE_NAME%:latest'
