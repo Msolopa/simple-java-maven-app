@@ -7,14 +7,14 @@ def buildApp() {
 def testApp() {
     echo 'Building the application.'
     echo "Building version ${NEW_VERSION}"
-    bat 'mvn -B -DskipTests clean package'
+    bat 'mvn test'
 }
 
 
 def deployApp() {
     echo 'Building the application.'
     echo "Building version ${NEW_VERSION}"
-    bat 'mvn -B -DskipTests clean package'
+    bat 'mvn deploy'
 }
 
 return this
