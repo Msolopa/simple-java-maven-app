@@ -41,14 +41,18 @@ pipeline {
                 expression { params.executeTests }
             }
             steps {
-                echo "testing the application"
+                script {
+                    gv.testApp()
+                //echo "testing the application"
                 // bat 'mvn test'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "deploying the application"
+                script {
+                    gv.deployApp()
+                //echo "deploying the application"
                 // bat 'mvn deploy'
             }
         }
