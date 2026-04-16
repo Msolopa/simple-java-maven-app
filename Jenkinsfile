@@ -1,12 +1,17 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: ' ')
+        booleanParam(name: 'executeTests', defaultValue: true, description: '')
+    }
+
     environment {
         NEW_VERSION = "1.3.0"
     }
 
     tools {
-        maven 'jenkins-maven'
+        maven 'Jenkins-Maven'
     }
 
     stages {
@@ -19,6 +24,9 @@ pipeline {
         }
 
         stage('Test') {
+            when {
+                expression { params.executeTests }
+            }
             steps {
                 echo "testing the application"
                 // bat 'mvn test'
@@ -27,7 +35,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo "deploying the application"
+                echo "deploying the applicationng"
                 // bat 'mvn deploy'
             }
         }
