@@ -27,8 +27,10 @@ pipeline {
         
         stage('Build') {
             steps {
-                echo "building the application"
-                echo "Building version ${NEW_VERSION}"
+                script{
+                    gv.buildApp()
+                //echo "building the application"
+                //echo "Building version ${NEW_VERSION}"
                 // bat 'mvn -B -DskipTests clean package'
             }
         }
