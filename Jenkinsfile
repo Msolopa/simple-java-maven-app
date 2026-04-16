@@ -43,8 +43,9 @@ pipeline {
             steps {
                 script {
                     gv.testApp()
-                //echo "testing the application"
-                // bat 'mvn test'
+                    // echo "testing the application"
+                    // bat 'mvn test'
+                }
             }
         }
 
@@ -52,11 +53,10 @@ pipeline {
             steps {
                 script {
                     gv.deployApp()
-                //echo "deploying the application"
-                // bat 'mvn deploy'
+                    // echo "deploying the application"
+                    // bat 'mvn deploy'
+                }
             }
         }
-    }
-}
     }
 }
