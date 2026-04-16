@@ -4,12 +4,13 @@ pipeline {
     agent any
 
     parameters {
-        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: ' ')
-        booleanParam(name: 'executeTests', defaultValue: true, description: '')
+        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: 'Select version')
+        booleanParam(name: 'EXECUTE_TESTS', defaultValue: true, description: 'Run tests')
     }
 
     environment {
-        NEW_VERSION = "1.3.0"
+        IMAGE_NAME = "kmpeka2013/simple-java-maven-app"
+        IMAGE_TAG  = "${params.VERSION}"
     }
 
     tools {
@@ -17,7 +18,7 @@ pipeline {
     }
 
     stages {
-        stage('init') {
+        stage('Init') {
             steps {
                 script {
                     gv = load "script.groovy"
@@ -29,32 +30,38 @@ pipeline {
             steps {
                 script {
                     gv.buildApp()
-                    // echo "building the application"
-                    // echo "Building version ${NEW_VERSION}"
-                    // bat 'mvn -B -DskipTests clean package'
                 }
             }
         }
 
         stage('Test') {
             when {
-                expression { params.executeTests }
+                expression { params.EXECUTE_TESTS }
             }
             steps {
                 script {
                     gv.testApp()
-                    // echo "testing the application"
-                    // bat 'mvn test'
                 }
             }
         }
 
-        stage('Deploy') {
+        stage('Docker Build') {
             steps {
-                script {
-                    gv.deployApp()
-                    // echo "deploying the application"
-                    // bat 'mvn deploy'
+                bat 'docker build -t %IMAGE_NAME%:%IMAGE_TAG% .'
+                bat 'docker tag %IMAGE_NAME%:%IMAGE_TAG% %IMAGE_NAME%:latest'
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'kmpekaPass',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
+                    bat 'docker push %IMAGE_NAME%:%IMAGE_TAG%'
+                    bat 'docker push %IMAGE_NAME%:latest'
                 }
             }
         }
