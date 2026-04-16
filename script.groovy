@@ -4,13 +4,13 @@ def buildApp() {
 }
 
 def testApp() {
-    echo 'Building the application.'
+    echo 'test the application.'
         bat 'mvn test'
 }
 
 
 def deployApp() {
-    echo 'Building the application.'
+    echo 'deploy the application.'
         bat 'mvn deploy'
 }
 
